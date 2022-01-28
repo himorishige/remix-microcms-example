@@ -1,31 +1,34 @@
+import { HeadersFunction, Link, LoaderFunction, useLoaderData } from 'remix';
+import { client } from '~/lib/client.server';
+import type { Content } from '~/types';
+
+// stale-while-revalidateの設定
+export const headers: HeadersFunction = () => {
+  return {
+    'Cache-Control': 'max-age=0, s-maxage=60, stale-while-revalidate=60',
+  };
+};
+
+export const loader: LoaderFunction = async () => {
+  // microcms-js-sdkを使って一覧を取得
+  const { contents } = await client.getList<Content[]>({
+    endpoint: 'blog',
+  });
+  return contents;
+};
+
 export default function Index() {
+  const contents = useLoaderData<Content[]>();
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
+    <div className="prose p-4">
+      <h1>Index Page</h1>
       <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
+        {contents.map((item) => (
+          <li key={item.id}>
+            <Link to={`/posts/${item.id}`}>{item.title}</Link>{' '}
+            {new Date(item.createdAt).toLocaleString()}
+          </li>
+        ))}
       </ul>
     </div>
   );
