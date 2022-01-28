@@ -4,6 +4,7 @@ import {
   LoaderFunction,
   MetaFunction,
   useLoaderData,
+  useSearchParams,
 } from 'remix';
 import { client } from '~/lib/client.server';
 import type { Content } from '~/types';
@@ -22,11 +23,16 @@ export const meta: MetaFunction = ({ data }: { data?: Content }) => {
 };
 
 // microCMS APIから記事詳細を取得する
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
+  // 下書きの場合
+  const url = new URL(request.url);
+  const draftKey = url.searchParams.get('draftKey');
+
   const content = await client
     .get<Content>({
       endpoint: 'blog',
       contentId: params.postId,
+      queries: { draftKey: draftKey ?? '' },
     })
     // 記事が404の場合は404ページへリダイレクト
     .catch(() => {
@@ -42,7 +48,7 @@ export default function PostsId() {
   const content = useLoaderData<Content>();
 
   return (
-    <div className="prose -p-4">
+    <div className="-p-4 prose">
       <h1>{content.title}</h1>
       <div>
         <img src={content.image.url} />
