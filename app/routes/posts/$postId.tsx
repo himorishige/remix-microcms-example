@@ -1,18 +1,21 @@
 import parse from 'html-react-parser';
 import {
   HeadersFunction,
+  json,
   LoaderFunction,
   MetaFunction,
   useLoaderData,
-  useSearchParams,
 } from 'remix';
 import { client } from '~/lib/client.server';
 import type { Content } from '~/types';
 
 // stale-while-revalidateの設定
-export const headers: HeadersFunction = () => {
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  const cacheControl =
+    loaderHeaders.get('Cache-Control') ??
+    'max-age=0, s-maxage=60, stale-while-revalidate=60';
   return {
-    'Cache-Control': 'max-age=0, s-maxage=60, stale-while-revalidate=60',
+    'cache-control': cacheControl,
   };
 };
 
@@ -41,7 +44,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       });
     });
 
-  return content;
+  // 下書きの場合キャッシュヘッダを変更
+  const headers = draftKey ? { 'Cache-Control': 'no-store' } : undefined;
+
+  return json(content, { headers });
 };
 
 export default function PostsId() {
