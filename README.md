@@ -1,5 +1,7 @@
 # Welcome to Remix!
 
+- [RemixでmicroCMSを使ったブログサイトを構築してみた](https://dev.classmethod.jp/articles/remix-with-microcms/)
+- [microCMS](https://microcms.io/)
 - [Remix Docs](https://remix.run/docs)
 
 ## Deployment
