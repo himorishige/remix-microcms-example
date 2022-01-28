@@ -1,21 +1,23 @@
+import type { MetaFunction } from 'remix';
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration
-} from "remix";
-import type { MetaFunction } from "remix";
-import styles from "./tailwind.css";
-
-export function links() {
-  return [{ rel: "stylesheet", href: styles }];
-}
+  ScrollRestoration,
+  useCatch,
+} from 'remix';
+import styles from './tailwind.css';
 
 export const meta: MetaFunction = () => {
-  return { title: "New Remix App" };
+  return { title: 'New Remix App' };
 };
+
+export function links() {
+  return [{ rel: 'stylesheet', href: styles }];
+}
 
 export default function App() {
   return (
@@ -27,11 +29,43 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <header className="mb-4 bg-slate-200 p-4">
+          <h1 className="text-5xl font-bold">
+            <Link to="/">Welcome to Remix</Link>
+          </h1>
+        </header>
+        <div className="p-4">
+          {/* Outlet部分にページがレンダリングされます */}
+          <Outlet />
+        </div>
         <ScrollRestoration />
         <Scripts />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        {/* 次バージョンから環境変数での分岐は不要になるようです */}
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>
     </html>
+  );
+}
+
+// エラーがここでキャッチされる
+// 404以外はさらにErrorBoundaryへ送っています
+export function CatchBoundary() {
+  const caught = useCatch();
+  if (caught.status === 404) {
+    return (
+      <div className="prose">
+        <h1>{caught.statusText}</h1>
+      </div>
+    );
+  }
+  throw new Error(`Unhandled error: ${caught.status}`);
+}
+
+// CatchBoundaryでキャッチできなかったエラーはこちらでキャッチする
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <div className="prose">
+      <h1>{error.message}</h1>
+    </div>
   );
 }
