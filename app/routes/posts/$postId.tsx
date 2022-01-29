@@ -22,7 +22,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 // MetaFunctionにはLoaderFunctionで取得したdataの他にparamやlocationを受け取ることができる
 // https://remix.run/docs/en/v1/api/conventions#page-context-in-meta-function
 export const meta: MetaFunction = ({ data }: { data?: Content }) => {
-  return { title: data?.title ?? '' };
+  return { title: data?.title ?? 'Not Found' };
 };
 
 // microCMS APIから記事詳細を取得する
@@ -54,10 +54,10 @@ export default function PostsId() {
   const content = useLoaderData<Content>();
 
   return (
-    <div className="-p-4 prose">
+    <div className="prose p-4">
       <h1>{content.title}</h1>
       <div>
-        <img src={content.image.url} />
+        <img src={content.image.url} alt="" />
       </div>
       <div>{parse(content.body)}</div>
     </div>
