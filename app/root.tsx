@@ -1,4 +1,3 @@
-import type { MetaFunction } from 'remix';
 import {
   Link,
   Links,
@@ -10,6 +9,7 @@ import {
   useCatch,
 } from 'remix';
 import styles from './tailwind.css';
+import type { MetaFunction } from 'remix';
 
 export const meta: MetaFunction = () => {
   return { title: 'New Remix App' };
@@ -29,7 +29,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <header className="mb-4 bg-slate-200 p-4">
+        <header className="p-4 mb-4 bg-slate-200">
           <h1 className="text-5xl font-bold">
             <Link to="/">Welcome to Remix</Link>
           </h1>

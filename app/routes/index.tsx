@@ -1,5 +1,5 @@
 import { HeadersFunction, Link, LoaderFunction, useLoaderData } from 'remix';
-import { client } from '~/lib/client.server';
+import { client } from '~/libs/client.server';
 import type { Content } from '~/types';
 
 // stale-while-revalidateの設定
@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async () => {
 export default function Index() {
   const contents = useLoaderData<Content[]>();
   return (
-    <div className="prose p-4">
+    <div className="p-4 prose">
       <h1>Index Page</h1>
       <ul>
         {contents.map((item) => (

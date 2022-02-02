@@ -6,7 +6,7 @@ import {
   MetaFunction,
   useLoaderData,
 } from 'remix';
-import { client } from '~/lib/client.server';
+import { client } from '~/libs/client.server';
 import type { Content } from '~/types';
 
 // stale-while-revalidateの設定
@@ -54,7 +54,7 @@ export default function PostsId() {
   const content = useLoaderData<Content>();
 
   return (
-    <div className="prose p-4">
+    <div className="p-4 prose">
       <h1>{content.title}</h1>
       <div>
         <img src={content.image.url} alt="" />
