@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async () => {
   return contents;
 };
 
-export default function Index() {
+export default function Index(): JSX.Element {
   const contents = useLoaderData<Content[]>();
   return (
     <div className="p-4 prose">

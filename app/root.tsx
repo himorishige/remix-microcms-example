@@ -15,11 +15,11 @@ export const meta: MetaFunction = () => {
   return { title: 'New Remix App' };
 };
 
-export function links() {
+export function links(): { rel: string; href: string }[] {
   return [{ rel: 'stylesheet', href: styles }];
 }
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <html lang="en">
       <head>
@@ -49,7 +49,7 @@ export default function App() {
 
 // エラーがここでキャッチされる
 // 404以外はさらにErrorBoundaryへ送っています
-export function CatchBoundary() {
+export function CatchBoundary(): JSX.Element {
   const caught = useCatch();
   if (caught.status === 404) {
     return (
@@ -62,7 +62,7 @@ export function CatchBoundary() {
 }
 
 // CatchBoundaryでキャッチできなかったエラーはこちらでキャッチする
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
   return (
     <div className="prose">
       <h1>{error.message}</h1>

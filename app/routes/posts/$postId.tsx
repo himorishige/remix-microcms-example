@@ -50,7 +50,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   return json(content, { headers });
 };
 
-export default function PostsId() {
+export default function PostsId(): JSX.Element {
   const content = useLoaderData<Content>();
 
   return (
