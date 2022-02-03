@@ -6,8 +6,10 @@ import {
   MetaFunction,
   useLoaderData,
 } from 'remix';
+import { z } from 'zod';
 import { client } from '~/libs/client.server';
 import type { Content } from '~/types';
+import { contentSchema } from '~/types';
 
 // stale-while-revalidateの設定
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
@@ -15,7 +17,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
     loaderHeaders.get('Cache-Control') ??
     'max-age=0, s-maxage=60, stale-while-revalidate=60';
   return {
-    'cache-control': cacheControl,
+    'Cache-Control': cacheControl,
   };
 };
 
@@ -37,15 +39,25 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       contentId: params.postId,
       queries: { draftKey: draftKey ?? '' },
     })
+    .then((response) => {
+      contentSchema.parse(response);
+      return response;
+    })
     // 記事が404の場合は404ページへリダイレクト
-    .catch(() => {
+    .catch((error: unknown) => {
+      if (error instanceof z.ZodError) {
+        console.log(error.issues);
+        throw error;
+      }
       throw new Response('Content Not Found.', {
         status: 404,
       });
     });
 
   // 下書きの場合キャッシュヘッダを変更
-  const headers = draftKey ? { 'Cache-Control': 'no-store' } : undefined;
+  const headers = draftKey
+    ? { 'Cache-Control': 'no-store, max-age=0' }
+    : undefined;
 
   return json(content, { headers });
 };
