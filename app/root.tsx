@@ -2,6 +2,7 @@ import {
   Link,
   Links,
   LiveReload,
+  LoaderFunction,
   Meta,
   Outlet,
   Scripts,
@@ -18,6 +19,10 @@ export const meta: MetaFunction = () => {
 export function links(): { rel: string; href: string }[] {
   return [{ rel: 'stylesheet', href: styles }];
 }
+
+export const loader: LoaderFunction = async () => {
+  return null;
+};
 
 export default function App(): JSX.Element {
   return (
