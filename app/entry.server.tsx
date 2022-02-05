@@ -14,7 +14,7 @@ export default async function handleRequest(
     const socialImage = await generateImage({
       title: 'Generating Social Images with Remix',
       author: 'himorishige',
-      profileImage: 'app/assets/images/profile.jpg',
+      profileImage: 'public/assets/images/profile.jpg',
     });
     return new Response(socialImage, {
       headers: {
