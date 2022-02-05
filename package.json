@@ -11,7 +11,7 @@
     "dev:css": "tailwindcss -o ./app/tailwind.css --watch",
     "postinstall": "remix setup node",
     "lint": "eslint --cache --ext .tsx,.ts,.js,.jsx . --fix",
-    "vercel-build": "\"vercel-build\": \"yum install libuuid-devel libmount-devel zlib && cp /lib64/{libuuid,libmount,libblkid,libz}.so.1 node_modules/canvas/build/Release/\""
+    "vercel-build": "yum install libuuid-devel libmount-devel zlib && cp /lib64/{libuuid,libmount,libblkid,libz}.so.1 node_modules/canvas/build/Release/"
   },
   "dependencies": {
     "@remix-run/react": "^1.1.3",
