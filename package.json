@@ -10,8 +10,7 @@
     "dev:remix": "node -r dotenv/config node_modules/.bin/remix dev",
     "dev:css": "tailwindcss -o ./app/tailwind.css --watch",
     "postinstall": "remix setup node",
-    "lint": "eslint --cache --ext .tsx,.ts,.js,.jsx . --fix",
-    "vercel-build": "yum install libuuid-devel libmount-devel zlib && cp /lib64/{libuuid,libmount,libblkid,libz}.so.1 node_modules/canvas/build/Release/"
+    "lint": "eslint --cache --ext .tsx,.ts,.js,.jsx . --fix"
   },
   "dependencies": {
     "@remix-run/react": "^1.1.3",
