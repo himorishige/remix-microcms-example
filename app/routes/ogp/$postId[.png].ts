@@ -62,7 +62,7 @@ export const loader: LoaderFunction = async ({
     const page = await browser.newPage();
 
     const templateUrl = request.url.replace(`.png`, '');
-    await page.goto(templateUrl || '', { waitUntil: 'networkidle0' });
+    await page.goto(templateUrl || '', { waitUntil: 'domcontentloaded' });
     const element = await page.$('#ogimage');
     if (!element) {
       console.error("Could'nt get #ogimage");
@@ -75,7 +75,7 @@ export const loader: LoaderFunction = async ({
     }
     screenshot = await page.screenshot({ type: 'png' });
   } catch (error) {
-    throw json({ error: 'Not Found' }, 404);
+    throw json({ error }, 404);
   } finally {
     if (browser) {
       await browser.close();
