@@ -1,12 +1,17 @@
-import { json, LoaderFunction, useLoaderData } from 'remix';
+import { json, LinksFunction, LoaderFunction, useLoaderData } from 'remix';
 import invariant from 'tiny-invariant';
 import { z } from 'zod';
 import { client } from '~/libs/client.server';
 import type { Content } from '~/types';
+import styles from '~/styles/ogimages.css';
 import { contentSchema } from '~/types';
 
 type LoaderData = {
   title: Content['title'];
+};
+
+export const links: LinksFunction = () => {
+  return [{ rel: 'stylesheet', href: styles }];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
