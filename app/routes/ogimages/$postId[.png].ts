@@ -36,7 +36,7 @@ export const loader: LoaderFunction = async ({
     const page = await browser.newPage();
 
     const templateUrl = request.url.replace(`.png`, '');
-    await page.goto(templateUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(templateUrl, { waitUntil: 'networkidle0' });
 
     screenshot = await page.screenshot({ type: 'png' });
   } catch (error: unknown) {
