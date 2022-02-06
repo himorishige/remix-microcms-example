@@ -42,31 +42,27 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       });
     });
 
-  return json({ content });
+  return json(content);
 };
 
 export default function OgImage(): JSX.Element {
   const { title } = useLoaderData<LoaderData>();
 
   return (
-    <>
-      <div id="ogimage" className="w-[1200px] h-[630px] bg-black rounded-2xl">
-        <div className="p-4 h-full bg-gradient-to-tr rounded-2xl">
-          <div className="flex flex-col justify-center items-center p-10 space-y-10 h-full text-zinc-200 bg-zinc-800 rounded-lg border border-zinc-300">
-            <h1 className="text-8xl leading-[1.2] text-center">
-              {title || 'no title'}
-            </h1>
-            <img
-              src="https://github.com/himorishige.png"
-              alt="himorishige"
-              className="w-40 h-40"
-            />
-            <div className="text-5xl font-light text-center">
-              http://himorishige.io
-            </div>
-          </div>
+    <div id="ogimage" className="w-[1200px] h-[630px]">
+      <div className="flex flex-col justify-between items-center p-12 space-y-12 h-full text-white bg-gradient-to-b from-cyan-800 to-blue-900">
+        <div className="flex items-center w-full h-full">
+          <h1 className="text-7xl leading-[1.2]">{title || 'no title'}</h1>
+        </div>
+        <div className="flex justify-end items-center mt-auto w-full">
+          <img
+            src="https://github.com/himorishige.png"
+            alt="himorishige"
+            className="w-24 h-24 rounded-full"
+          />
+          <p className="pl-4 text-6xl text-right">@_himorishige</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

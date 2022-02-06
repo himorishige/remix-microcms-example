@@ -20,16 +20,25 @@ export const loader: LoaderFunction = async () => {
 export default function Index(): JSX.Element {
   const contents = useLoaderData<Content[]>();
   return (
-    <div className="p-4 prose">
-      <h1>Index Page</h1>
-      <ul>
-        {contents.map((item) => (
-          <li key={item.id}>
-            <Link to={`/posts/${item.id}`}>{item.title}</Link>{' '}
-            {new Date(item.createdAt).toLocaleString()}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <header className="p-4 mb-4 bg-slate-200">
+        <h1 className="text-5xl font-bold">
+          <Link to="/">Welcome to Remix</Link>
+        </h1>
+      </header>
+      <div className="p-4">
+        <div className="p-4 prose">
+          <h1>Index Page</h1>
+          <ul>
+            {contents.map((item) => (
+              <li key={item.id}>
+                <Link to={`/posts/${item.id}`}>{item.title}</Link>{' '}
+                {new Date(item.createdAt).toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 }

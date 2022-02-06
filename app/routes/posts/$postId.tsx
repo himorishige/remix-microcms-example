@@ -9,6 +9,12 @@ import {
 import invariant from 'tiny-invariant';
 import { z } from 'zod';
 import { client } from '~/libs/client.server';
+import {
+  titleSeparator,
+  description,
+  twitterHandle,
+  siteName,
+} from '~/config/siteConfig';
 import { contentSchema, type Content } from '~/types';
 
 type LoaderData = {
@@ -31,19 +37,13 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 export const meta: MetaFunction = ({ params, location, data }) => {
   const { content, domain } = data ?? {};
 
-  const cover = null;
-  const titleSeparator = ' | ';
-  const description = 'description';
-  const siteName = 'blog';
-  const twitterHandle = '@_himorishige';
-
   const url = `${domain}${location.pathname}`;
-  const image = cover
-    ? `${domain}${cover}`
-    : `${domain}/ogp/${params.postId}.png`;
+  const image = content.cover
+    ? content.cover.url
+    : `${domain}/ogimages/${params.postId}.png`;
 
   return {
-    title: content.title,
+    title: `${content.title}${titleSeparator}${siteName}`,
     description,
     'og:url': url,
     'og:title': `${content.title}${titleSeparator}${siteName}`,
