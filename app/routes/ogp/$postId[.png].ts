@@ -5,6 +5,7 @@ import chromium from 'chrome-aws-lambda';
 import { json, type LoaderFunction } from 'remix';
 // import invariant from 'tiny-invariant';
 
+const isDev = !process.env.AWS_REGION;
 const defaultViewport = { width: 1200, height: 630 };
 
 export const loader: LoaderFunction = async ({
@@ -24,7 +25,8 @@ export const loader: LoaderFunction = async ({
     'Content-Type': 'image/png',
     'Content-Disposition': `inline; filename="ogp.png"`,
     'X-Content-Type-Options': 'nosniff',
-    'Cache-Control': 's-maxage=31536000, stale-while-revalidate',
+    'Cache-Control':
+      'public, immutable, no-transform, s-maxage=31536000, max-age=31536000',
   };
 
   // const ogCache = join(process.cwd(), '.cache', 'ogimages');
@@ -54,9 +56,11 @@ export const loader: LoaderFunction = async ({
 
   try {
     browser = await chromium.puppeteer.launch({
-      // channel: 'chrome',
+      args: isDev ? [] : chromium.args,
+      channel: isDev ? 'chrome' : undefined,
+      executablePath: isDev ? undefined : await chromium.executablePath,
+      headless: isDev ? true : chromium.headless,
       defaultViewport,
-      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
