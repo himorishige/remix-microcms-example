@@ -74,8 +74,8 @@ export const loader: LoaderFunction = async ({
     //   throw json({ error: 'Error creating the image' }, 500);
     // }
     screenshot = await page.screenshot({ type: 'png' });
-  } catch (error) {
-    throw json({ error: 'Not Found' }, 404);
+  } catch (error: any) {
+    throw json({ error: error.message }, 500);
   } finally {
     if (browser) {
       await browser.close();
