@@ -54,7 +54,7 @@ export const loader: LoaderFunction = async ({
 
   try {
     browser = await chromium.puppeteer.launch({
-      channel: 'chrome',
+      // channel: 'chrome',
       defaultViewport,
       ignoreHTTPSErrors: true,
     });
@@ -63,19 +63,19 @@ export const loader: LoaderFunction = async ({
 
     const templateUrl = request.url.replace(`.png`, '');
     await page.goto(templateUrl || '', { waitUntil: 'domcontentloaded' });
-    const element = await page.$('#ogimage');
-    if (!element) {
-      console.error("Could'nt get #ogimage");
-      throw json({ error: 'Error creating the image' }, 500);
-    }
-    const boundingBox = await element.boundingBox();
-    if (!boundingBox) {
-      console.error("Could'nt get element.boundingBox");
-      throw json({ error: 'Error creating the image' }, 500);
-    }
+    // const element = await page.$('#ogimage');
+    // if (!element) {
+    //   console.error("Could'nt get #ogimage");
+    //   throw json({ error: 'Error creating the image' }, 500);
+    // }
+    // const boundingBox = await element.boundingBox();
+    // if (!boundingBox) {
+    //   console.error("Could'nt get element.boundingBox");
+    //   throw json({ error: 'Error creating the image' }, 500);
+    // }
     screenshot = await page.screenshot({ type: 'png' });
   } catch (error) {
-    throw json({ error }, 404);
+    throw json({ error: 'Not Found' }, 404);
   } finally {
     if (browser) {
       await browser.close();
