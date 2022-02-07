@@ -1,5 +1,5 @@
 import {
-  Link,
+  HeadersFunction,
   Links,
   LiveReload,
   LoaderFunction,
@@ -9,11 +9,21 @@ import {
   ScrollRestoration,
   useCatch,
 } from 'remix';
-import styles from './tailwind.css';
 import type { MetaFunction } from 'remix';
+import { siteName, description } from '~/config/siteConfig';
+import styles from '~/tailwind.css';
 
 export const meta: MetaFunction = () => {
-  return { title: 'New Remix App' };
+  return {
+    title: siteName,
+    description,
+  };
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    'Cache-Control': 'max-age=0, s-maxage=60, stale-while-revalidate=60',
+  };
 };
 
 export function links(): { rel: string; href: string }[] {
@@ -34,15 +44,8 @@ export default function App(): JSX.Element {
         <Links />
       </head>
       <body>
-        <header className="p-4 mb-4 bg-slate-200">
-          <h1 className="text-5xl font-bold">
-            <Link to="/">Welcome to Remix</Link>
-          </h1>
-        </header>
-        <div className="p-4">
-          {/* Outlet部分にページがレンダリングされます */}
-          <Outlet />
-        </div>
+        {/* Outlet部分にページがレンダリングされます */}
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         {/* 次バージョンから環境変数での分岐は不要になるようです */}
@@ -53,7 +56,7 @@ export default function App(): JSX.Element {
 }
 
 // エラーがここでキャッチされる
-// 404以外はさらにErrorBoundaryへ送っています
+// 404以外はさらにErrorBoundaryへ
 export function CatchBoundary(): JSX.Element {
   const caught = useCatch();
   if (caught.status === 404) {

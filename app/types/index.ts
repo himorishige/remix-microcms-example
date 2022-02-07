@@ -14,7 +14,12 @@ export type Content = {
   title: string;
   image: MicroCMSImage;
   body: string;
+  cover?: MicroCMSImage;
 } & MicroCMSDate;
+
+export type Contents = {
+  contents: Content[];
+};
 
 const microCMSImageSchema = schemaForType<MicroCMSImage>()(
   z.object({
@@ -29,10 +34,17 @@ export const contentSchema = schemaForType<Content>()(
     id: z.string(),
     title: z.string(),
     image: microCMSImageSchema,
+    cover: microCMSImageSchema.optional(),
     body: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
     publishedAt: z.string(),
     revisedAt: z.string(),
+  }),
+);
+
+export const contentsSchema = schemaForType<Contents>()(
+  z.object({
+    contents: contentSchema.array(),
   }),
 );
