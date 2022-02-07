@@ -10,20 +10,16 @@ type LoaderData = {
   title: Content['title'];
 };
 
+// Lambda上のchromiumでは日本語フォント、絵文字がないためWebフォントを利用
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];
 };
 
-export const loader: LoaderFunction = async ({ params, request }) => {
-  const host =
-    request.headers.get('X-Forwarded-Host') ?? request.headers.get('host');
-  if (!host) {
-    throw new Error('Could not determine domain URL.');
-  }
-
+export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.postId);
   const postId = params.postId;
 
+  // microCMS APIからタイトルのみ取得
   const content = await client
     .get<Content['title']>({
       endpoint: 'blog',
@@ -39,8 +35,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     // 記事が404の場合は404ページへリダイレクト
     .catch((error: unknown) => {
       if (error instanceof z.ZodError) {
-        console.log(error.issues);
-        throw error;
+        throw json({ error: 'Invalid data format' }, 500);
       }
       throw new Response('Content Not Found.', {
         status: 404,
@@ -52,6 +47,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 export default function OgImage(): JSX.Element {
   const { title } = useLoaderData<LoaderData>();
+  // ここでデータの検証処理などを入れる
+  if (!title) return <div>...loading</div>;
 
   return (
     <div id="ogimage" className="w-[1200px] h-[630px]">
@@ -60,6 +57,7 @@ export default function OgImage(): JSX.Element {
           <h1 className="text-7xl leading-[1.2]">{title || 'no title'}</h1>
         </div>
         <div className="flex justify-end items-center mt-auto w-full">
+          {/* アバター画像、IDはいったん直接記載 */}
           <img
             src="https://github.com/himorishige.png"
             alt="himorishige"

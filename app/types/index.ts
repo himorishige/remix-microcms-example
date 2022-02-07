@@ -17,6 +17,10 @@ export type Content = {
   cover?: MicroCMSImage;
 } & MicroCMSDate;
 
+export type Contents = {
+  contents: Content[];
+};
+
 const microCMSImageSchema = schemaForType<MicroCMSImage>()(
   z.object({
     url: z.string(),
@@ -36,5 +40,11 @@ export const contentSchema = schemaForType<Content>()(
     updatedAt: z.string(),
     publishedAt: z.string(),
     revisedAt: z.string(),
+  }),
+);
+
+export const contentsSchema = schemaForType<Contents>()(
+  z.object({
+    contents: contentSchema.array(),
   }),
 );

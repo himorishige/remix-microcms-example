@@ -14,7 +14,10 @@ import { siteName, description } from '~/config/siteConfig';
 import styles from '~/tailwind.css';
 
 export const meta: MetaFunction = () => {
-  return { title: siteName, description };
+  return {
+    title: siteName,
+    description,
+  };
 };
 
 export const headers: HeadersFunction = () => {
@@ -53,7 +56,7 @@ export default function App(): JSX.Element {
 }
 
 // エラーがここでキャッチされる
-// 404以外はさらにErrorBoundaryへ送っています
+// 404以外はさらにErrorBoundaryへ
 export function CatchBoundary(): JSX.Element {
   const caught = useCatch();
   if (caught.status === 404) {

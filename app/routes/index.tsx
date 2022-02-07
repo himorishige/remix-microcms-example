@@ -1,6 +1,14 @@
-import { HeadersFunction, Link, LoaderFunction, useLoaderData } from 'remix';
+import {
+  HeadersFunction,
+  json,
+  Link,
+  LoaderFunction,
+  useLoaderData,
+} from 'remix';
+import { z } from 'zod';
 import { client } from '~/libs/client.server';
-import type { Content } from '~/types';
+import { Layout } from '~/components/Layout';
+import { Contents, contentsSchema } from '~/types';
 
 // stale-while-revalidateの設定
 export const headers: HeadersFunction = () => {
@@ -11,21 +19,29 @@ export const headers: HeadersFunction = () => {
 
 export const loader: LoaderFunction = async () => {
   // microcms-js-sdkを使って一覧を取得
-  const { contents } = await client.getList<Content[]>({
-    endpoint: 'blog',
-  });
+  const contents = await client
+    .getList<Contents>({
+      endpoint: 'blog',
+    })
+    .then((response) => {
+      contentsSchema.parse(response);
+      return response;
+    })
+    .catch((error: unknown) => {
+      if (error instanceof z.ZodError) {
+        throw json({ error: 'Invalid data format' }, 500);
+      }
+    });
   return contents;
 };
 
 export default function Index(): JSX.Element {
-  const contents = useLoaderData<Content[]>();
+  const { contents } = useLoaderData<Contents>();
+  // ここでデータの検証処理などを入れる
+  if (!contents) return <div>...loading</div>;
+
   return (
-    <>
-      <header className="p-4 mb-4 bg-slate-200">
-        <h1 className="text-5xl font-bold">
-          <Link to="/">Welcome to Remix</Link>
-        </h1>
-      </header>
+    <Layout>
       <div className="p-4">
         <div className="p-4 prose">
           <h1>Index Page</h1>
@@ -39,6 +55,6 @@ export default function Index(): JSX.Element {
           </ul>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }

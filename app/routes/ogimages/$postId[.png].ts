@@ -7,12 +7,7 @@ const isDev = !process.env.AWS_REGION;
 export const loader: LoaderFunction = async ({
   request,
 }): Promise<Response> => {
-  const host =
-    request.headers.get('X-Forwarded-Host') ?? request.headers.get('host');
-  if (!host) {
-    throw new Error('Could not determine domain URL.');
-  }
-
+  // headerを生成
   const headers: HeadersInit = {
     'Content-Type': 'image/png',
     'Content-Disposition': `inline; filename="ogp.png"`,
@@ -25,6 +20,7 @@ export const loader: LoaderFunction = async ({
   let screenshot = null;
 
   try {
+    // chromiumの設定をローカル環境とVercel環境で切り替え
     browser = await chromium.puppeteer.launch({
       args: isDev ? [] : chromium.args,
       channel: isDev ? 'chrome' : undefined,
@@ -35,9 +31,12 @@ export const loader: LoaderFunction = async ({
 
     const page = await browser.newPage();
 
+    // 同じディレクトリの$postIdページを撮影用のテンプレートファイルとして利用
     const templateUrl = request.url.replace(`.png`, '');
+    // 画像、Webフォントを利用しているため通信が終わり500ms待つ
     await page.goto(templateUrl, { waitUntil: 'networkidle0' });
 
+    // png画像としてスクリーンショットを撮影
     screenshot = await page.screenshot({ type: 'png' });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -54,5 +53,6 @@ export const loader: LoaderFunction = async ({
     throw json({ error: 'Error creating the image' }, 500);
   }
 
+  // スクリーンショット画像をレスポンスとして返す
   return new Response(screenshot, { headers });
 };
