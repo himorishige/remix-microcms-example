@@ -3,6 +3,7 @@ import {
   json,
   Link,
   LoaderFunction,
+  useCatch,
   useLoaderData,
 } from 'remix';
 import { z } from 'zod';
@@ -29,7 +30,10 @@ export const loader: LoaderFunction = async () => {
     })
     .catch((error: unknown) => {
       if (error instanceof z.ZodError) {
-        throw json({ error: 'Invalid data format' }, 500);
+        throw json(
+          { error: 'Invalid data format', message: error.flatten() },
+          500,
+        );
       }
     });
   return contents;
@@ -54,6 +58,19 @@ export default function Index(): JSX.Element {
             ))}
           </ul>
         </div>
+      </div>
+    </Layout>
+  );
+}
+
+// 404以外はさらにErrorBoundaryへ
+export function CatchBoundary(): JSX.Element {
+  const caught = useCatch();
+  console.log(caught);
+  return (
+    <Layout>
+      <div className="p-4 prose">
+        <h1>{caught.data}</h1>
       </div>
     </Layout>
   );

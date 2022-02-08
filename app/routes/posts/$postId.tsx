@@ -4,6 +4,7 @@ import {
   json,
   LoaderFunction,
   MetaFunction,
+  useCatch,
   useLoaderData,
 } from 'remix';
 import invariant from 'tiny-invariant';
@@ -82,7 +83,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     })
     .catch((error: unknown) => {
       if (error instanceof z.ZodError) {
-        throw json({ error: 'Invalid data format' }, 500);
+        throw json(
+          { error: 'Invalid data format', message: error.flatten() },
+          500,
+        );
       }
       // 記事が404の場合は404ページへリダイレクト
       throw new Response('Content Not Found.', {
@@ -111,6 +115,18 @@ export default function PostsId(): JSX.Element {
           <img src={content.image.url} alt="" />
         </div>
         <div>{parse(content.body)}</div>
+      </div>
+    </Layout>
+  );
+}
+
+// 404以外はさらにErrorBoundaryへ
+export function CatchBoundary(): JSX.Element {
+  const caught = useCatch();
+  return (
+    <Layout>
+      <div className="p-4 prose">
+        <h1>{caught.data}</h1>
       </div>
     </Layout>
   );
