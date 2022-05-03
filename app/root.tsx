@@ -48,8 +48,7 @@ export default function App(): JSX.Element {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        {/* 次バージョンから環境変数での分岐は不要になるようです */}
-        {process.env.NODE_ENV === 'development' && <LiveReload />}
+        <LiveReload />
       </body>
     </html>
   );
